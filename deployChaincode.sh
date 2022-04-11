@@ -1,5 +1,6 @@
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+export ORDERER_CA3=${PWD}/artifacts/channel/crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 export PEER0_ORG1_CA=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
 export PEER0_ORG2_CA=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 export PEER0_ORG3_CA=${PWD}/artifacts/channel/crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
@@ -66,7 +67,7 @@ setGlobalsForPeer1Org3() {
 
 presetup() {
     echo Vendoring Go dependencies ...
-    pushd ./artifacts/src/github.com/fabcar_contract_api/go
+    pushd ./artifacts/src/github.com/fabcar/go
     GO111MODULE=on go mod vendor
     popd
     echo Finished vendoring Go dependencies
@@ -75,7 +76,8 @@ presetup() {
 
 CHANNEL_NAME="mychannel"
 CC_RUNTIME_LANGUAGE="golang"
-VERSION="1"
+VERSION=1
+PACKAGE_ID=fabcar_1:31df375b27ea4fd2985080a338aaad9711c16d64784f52f6990e0419d7a1ccca
 CC_SRC_PATH="./artifacts/src/github.com/fabcar/go"
 CC_NAME="fabcar"
 # CC_SRC_PATH="./artifacts/src/github.com/fabcar_contract_api/go"
@@ -199,6 +201,21 @@ approveForMyOrg2() {
 
 # approveForMyOrg2
 
+approveForMyOrg3() {
+    setGlobalsForPeer0Org3
+
+    peer lifecycle chaincode approveformyorg -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA3 --channelID $CHANNEL_NAME --name ${CC_NAME} \
+        --collections-config $PRIVATE_DATA_CONFIG \
+        --version ${VERSION} --init-required --package-id ${PACKAGE_ID} \
+        --sequence ${VERSION}
+
+    echo "===================== chaincode approved from org 3 ===================== "
+}
+
+# approveForMyOrg3
+
 checkCommitReadyness() {
 
     setGlobalsForPeer0Org1
@@ -219,6 +236,7 @@ commitChaincodeDefination() {
         --collections-config $PRIVATE_DATA_CONFIG \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+        --peerAddresses localhost:11051 --tlsRootCertFiles $PEER0_ORG3_CA \
         --version ${VERSION} --sequence ${VERSION} --init-required
 
 }
@@ -233,15 +251,18 @@ queryCommitted() {
 
 # queryCommitted
 
+# peer Chaincode instantiate -o orderer.fsc.com:7050 -C $CHANNEL_NAME 
+# -n fsccc -v 1.0 -c '{"Args":["init","order_001","John_1","100","5"]}' 
+# -P "OR('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
+
 chaincodeInvokeInit() {
     setGlobalsForPeer0Org1
-    peer chaincode invoke -o localhost:7050 \
+    peer chaincode instantiate -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
         --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
-        -C $CHANNEL_NAME -n ${CC_NAME} \
+        -C $CHANNEL_NAME -n ${CC_NAME} -v $VERSION \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        --isInit -c '{"Args":[]}'
+        -c '{"Args":["init","order_001","John_1","100","5","apple","organic A"]}'
 
 }
 
@@ -315,15 +336,18 @@ chaincodeQuery() {
 
 # packageChaincode
 # installChaincode
+
 # queryInstalled
 # approveForMyOrg1
 # checkCommitReadyness
 # approveForMyOrg2
 # checkCommitReadyness
+# approveForMyOrg3
+# checkCommitReadyness
 # commitChaincodeDefination
 # queryCommitted
 
-# chaincodeInvokeInit
+chaincodeInvokeInit
 # sleep 5
 # chaincodeInvoke
 # sleep 3
