@@ -8,34 +8,34 @@ import (
 
 	"github.com/hyperledger/fabric-chaincode-go/shim"
 	pb "github.com/hyperledger/fabric-protos-go/peer"
-	"github.com/pkg/errors"
 )
 
 type FoodContract struct{}
 
 type food struct {
-	OrderId                string
-	FoodId                 string
-	ConsumerId             string
-	ManufactureId          string
-	WholesalerId           string
-	RetailerId             string
-	LogisticsId            string
-	Status                 string
-	RawFoodProcessDate     string
-	ManufactureProcessDate string
-	WholesaleProcessDate   string
-	ShippingProcessDate    string
-	RetailProcessDate      string
-	ProduceName            string
-	Grade                  string
-	OrderPrice             int
-	ShippingPrice          int
-	DeliveryDate           string
+	OrderId                string `json:"orderId"`
+	FoodId                 string `json:"foodId"`
+	ConsumerId             string `json:"consumerId"`
+	ManufactureId          string `json:"manufactureId"`
+	WholesalerId           string `json:"wholesalerId"`
+	RetailerId             string `json:"retailerId"`
+	LogisticsId            string `json:"logisticsId"`
+	Status                 string `json:"status"`
+	RawFoodProcessDate     string `json:"rawProcessDate"`
+	ManufactureProcessDate string `json:"manufactureProcessDate"`
+	WholesaleProcessDate   string `json:"wholesaleProcessDate"`
+	ShippingProcessDate    string `json:"shippingProcessDate"`
+	RetailProcessDate      string `json:"retailProcessDate"`
+	ProduceName            string `json:"name"`
+	Grade                  string `json:"grade"`
+	OrderPrice             int    `json:"orderPrice"`
+	ShippingPrice          int    `json:"shippingPrice"`
+	DeliveryDate           string `json:"deliveryDate"`
 }
 
 func (t *FoodContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
-	return setupFoodSupplyChainOrder(stub)
+	// return setupFoodSupplyChainOrder(stub)
+	return shim.Success(nil)
 }
 
 func setupFoodSupplyChainOrder(stub shim.ChaincodeStubInterface) pb.Response {
@@ -74,7 +74,12 @@ func (t *FoodContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func (f *FoodContract) createRawFood(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	if len(args) != 2 {
+		fmt.Println(args)
+		return shim.Error("Incorrect number of arguments. Expecting 5")
+	}
 	orderId := args[0] // THIS WILL BE THE SHA256 QR hash
+	fmt.Println(args[0])
 	foodBytes, _ := stub.GetState(orderId)
 	fd := food{}
 	json.Unmarshal(foodBytes, &fd)
@@ -234,17 +239,21 @@ func (f *FoodContract) query(stub shim.ChaincodeStubInterface, args []string) pb
 }
 
 //wrapping error with stack
-func wrapWithStack() error {
-	err := displayError()
-	return errors.Wrap(err, "wrapping an application error with stack trace")
-}
-func displayError() error {
-	return errors.New("example error message")
-}
+// func wrapWithStack() error {
+// 	err := displayError()
+// 	return errors.Wrap(err, "wrapping an application error with stack trace")
+// }
+// func displayError() error {
+// 	return errors.New("example error message")
+// }
 func main() {
-	err := displayError()
-	fmt.Printf("print error without stack trace: %s\n\n", err)
-	fmt.Printf("print error with stack trace: %+v\n\n", err)
-	err = wrapWithStack()
-	fmt.Printf("%+v\n\n", err)
+	// err := displayError()
+	// fmt.Printf("print error without stack trace: %s\n\n", err)
+	// fmt.Printf("print error with stack trace: %+v\n\n", err)
+	// err = wrapWithStack()
+	// fmt.Printf("%+v\n\n", err)
+	err := shim.Start(new(FoodContract))
+	if err != nil {
+		fmt.Printf("Error creating new Smart Contract: %s", err)
+	}
 }

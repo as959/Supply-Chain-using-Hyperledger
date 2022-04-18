@@ -255,14 +255,32 @@ queryCommitted() {
 # -n fsccc -v 1.0 -c '{"Args":["init","order_001","John_1","100","5"]}' 
 # -P "OR('Org1MSP.member','Org2MSP.member','Org3MSP.member')"
 
+# setGlobalsForPeer0Org1
+#     peer chaincode invoke -o localhost:7050 \
+#         --ordererTLSHostnameOverride orderer.example.com \
+#         --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+#         -C $CHANNEL_NAME -n ${CC_NAME} \
+#         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+#         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+#         --isInit -c '{"Args":[]}'
+
+
 chaincodeInvokeInit() {
+    # setGlobalsForPeer0Org1
+    # peer chaincode instantiate -o localhost:7050 \
+    #     --ordererTLSHostnameOverride orderer.example.com \
+    #     --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
+    #     -C $CHANNEL_NAME -n ${CC_NAME} -v $VERSION \
+    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+    #     -c '{"Args":["init","order_001","John_1","100","5","apple","organic A"]}'
     setGlobalsForPeer0Org1
-    peer chaincode instantiate -o localhost:7050 \
+    peer chaincode invoke -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
         --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA \
-        -C $CHANNEL_NAME -n ${CC_NAME} -v $VERSION \
+        -C $CHANNEL_NAME -n ${CC_NAME} \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-        -c '{"Args":["init","order_001","John_1","100","5","apple","organic A"]}'
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+        --isInit -c '{"Args":[]}'
 
 }
 
@@ -278,16 +296,7 @@ chaincodeInvoke() {
 
     setGlobalsForPeer0Org1
 
-    ## Create Car
-    # peer chaincode invoke -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com \
-    #     --tls $CORE_PEER_TLS_ENABLED \
-    #     --cafile $ORDERER_CA \
-    #     -C $CHANNEL_NAME -n ${CC_NAME}  \
-    #     --peerAddresses localhost:7051 \
-    #     --tlsRootCertFiles $PEER0_ORG1_CA \
-    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-    #     -c '{"function": "createCar","Args":["Car-ABCDEEE", "Audi", "R8", "Red", "Pavan"]}'
+    
 
     ## Init ledger
     peer chaincode invoke -o localhost:7050 \
@@ -297,19 +306,31 @@ chaincodeInvoke() {
         -C $CHANNEL_NAME -n ${CC_NAME} \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        -c '{"function": "initLedger","Args":[]}'
+        -c '{"function": "setupFoodSupplyChainOrder","Args":["4a696e20536f6f","asdbafbu2b","1000","500","Apple","One"]}'
 
-    ## Add private data
-    export CAR=$(echo -n "{\"key\":\"1111\", \"make\":\"Tesla\",\"model\":\"Tesla A1\",\"color\":\"White\",\"owner\":\"pavan\",\"price\":\"10000\"}" | base64 | tr -d \\n)
+    # Create Food
     peer chaincode invoke -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
         --tls $CORE_PEER_TLS_ENABLED \
         --cafile $ORDERER_CA \
-        -C $CHANNEL_NAME -n ${CC_NAME} \
-        --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        -c '{"function": "createPrivateCar", "Args":[]}' \
-        --transient "{\"car\":\"$CAR\"}"
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "createRawFood","Args":["546f6d6f6b6f","Food-ABCDEEE"]}'
+
+    ## Add private data
+    # export FOOD=$(echo -n "{\"key\":\"1111\", \"name\":\"Apple\",\"grade\":\"One\",\"status\":\"rawfoodcreated\",\"orderId\":\"546f6d6f6b6f\",\"orderPrice\":\"10000\"}" | base64 | tr -d \\n)
+    # export FOOD=$(echo -n "{\"key\":\"1111\", \"name\":\"Apple\",\"grade\":\"One\",\"status\":\"rawfoodcreated\",\"orderId\":\"546f6d6f6b6f\",\"orderPrice\":\"10000\"}" | base64 | tr -d \\n)
+    # peer chaincode invoke -o localhost:7050 \
+    #     --ordererTLSHostnameOverride orderer.example.com \
+    #     --tls $CORE_PEER_TLS_ENABLED \
+    #     --cafile $ORDERER_CA \
+    #     -C $CHANNEL_NAME -n ${CC_NAME} \
+    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+    #     -c '{"function": "createRawFood", "Args":[]}' \
+    #     --transient "{\"food\":\"$FOOD\"}"
 }
 
 # chaincodeInvoke
@@ -317,16 +338,16 @@ chaincodeInvoke() {
 chaincodeQuery() {
     setGlobalsForPeer0Org2
 
-    # Query all cars
-    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["queryAllCars"]}'
+    # Query all foods
+    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["queryAllFoods"]}'
 
-    # Query Car by Id
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "queryCar","Args":["CAR0"]}'
+    # Query Food by Id
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "query","Args":["546f6d6f6b6f"]}'
     #'{"Args":["GetSampleData","Key1"]}'
 
-    # Query Private Car by Id
-    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readPrivateCar","Args":["1111"]}'
-    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readCarPrivateDetails","Args":["1111"]}'
+    # Query Private Food by Id
+    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readPrivateFood","Args":["1111"]}'
+    # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "readFoodPrivateDetails","Args":["1111"]}'
 }
 
 # chaincodeQuery
@@ -346,8 +367,7 @@ chaincodeQuery() {
 # checkCommitReadyness
 # commitChaincodeDefination
 # queryCommitted
-
-chaincodeInvokeInit
+# chaincodeInvokeInit 
 # sleep 5
 # chaincodeInvoke
 # sleep 3
