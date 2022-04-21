@@ -34,22 +34,29 @@ type food struct {
 }
 
 func (t *FoodContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
-	// return setupFoodSupplyChainOrder(stub)
-	return shim.Success(nil)
+	return setupFoodSupplyChainOrder(stub)
+	// return shim.Success(nil)
 }
 
 func setupFoodSupplyChainOrder(stub shim.ChaincodeStubInterface) pb.Response {
+	fmt.Println("Hiiiii")
+
 	_, args := stub.GetFunctionAndParameters()
+	fmt.Println(args)
 	orderId := args[0]
 	consumerId := args[1]
 	orderPrice, _ := strconv.Atoi(args[2])
 	shippingPrice, _ := strconv.Atoi(args[3])
 	produceName := args[4]
+	fmt.Println("Hiiiii 1")
 	grade := args[5]
+	fmt.Println("Hiiiii 2")
 	foodContract := food{
 		OrderId: orderId, ConsumerId: consumerId, OrderPrice: orderPrice, ShippingPrice: shippingPrice, Status: "order initiated", ProduceName: produceName, Grade: grade}
 	foodBytes, _ := json.Marshal(foodContract)
+	fmt.Println("Hiiiii 3")
 	stub.PutState(foodContract.OrderId, foodBytes)
+	fmt.Println("Hiiiii 4")
 	return shim.Success(nil)
 }
 

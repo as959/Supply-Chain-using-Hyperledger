@@ -280,7 +280,7 @@ chaincodeInvokeInit() {
         -C $CHANNEL_NAME -n ${CC_NAME} \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        --isInit -c '{"Args":[]}'
+        --isInit -c '{"Args":["init","order_001","John_1","100","5","apple","organic A"]}'
 
 }
 
@@ -299,14 +299,14 @@ chaincodeInvoke() {
     
 
     ## Init ledger
-    peer chaincode invoke -o localhost:7050 \
-        --ordererTLSHostnameOverride orderer.example.com \
-        --tls $CORE_PEER_TLS_ENABLED \
-        --cafile $ORDERER_CA \
-        -C $CHANNEL_NAME -n ${CC_NAME} \
-        --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        -c '{"function": "setupFoodSupplyChainOrder","Args":["4a696e20536f6f","asdbafbu2b","1000","500","Apple","One"]}'
+    # peer chaincode invoke -o localhost:7050 \
+    #     --ordererTLSHostnameOverride orderer.example.com \
+    #     --tls $CORE_PEER_TLS_ENABLED \
+    #     --cafile $ORDERER_CA \
+    #     -C $CHANNEL_NAME -n ${CC_NAME} \
+    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
+    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
+    #     -c '{"function": "setupFoodSupplyChainOrder","Args":["4a696e20536f6f","asdbafbu2b","1000","500","Apple","One"]}'
 
     # Create Food
     peer chaincode invoke -o localhost:7050 \
@@ -342,7 +342,7 @@ chaincodeQuery() {
     # peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"Args":["queryAllFoods"]}'
 
     # Query Food by Id
-    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "query","Args":["546f6d6f6b6f"]}'
+    peer chaincode query -C $CHANNEL_NAME -n ${CC_NAME} -c '{"function": "query","Args":["order_001"]}'
     #'{"Args":["GetSampleData","Key1"]}'
 
     # Query Private Food by Id
