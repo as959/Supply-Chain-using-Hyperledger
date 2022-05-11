@@ -83,7 +83,7 @@ func (t *FoodContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 func (f *FoodContract) createRawFood(stub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 2 {
 		fmt.Println(args)
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
 	orderId := args[0] // THIS WILL BE THE SHA256 QR hash
 	fmt.Println(args[0])

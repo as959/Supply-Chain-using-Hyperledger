@@ -295,19 +295,7 @@ chaincodeInvoke() {
     # -c '{"function":"initLedger","Args":[]}'
 
     setGlobalsForPeer0Org1
-
-    
-
-    ## Init ledger
-    # peer chaincode invoke -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com \
-    #     --tls $CORE_PEER_TLS_ENABLED \
-    #     --cafile $ORDERER_CA \
-    #     -C $CHANNEL_NAME -n ${CC_NAME} \
-    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-    #     -c '{"function": "setupFoodSupplyChainOrder","Args":["4a696e20536f6f","asdbafbu2b","1000","500","Apple","One"]}'
-
+  
     # Create Food
     peer chaincode invoke -o localhost:7050 \
         --ordererTLSHostnameOverride orderer.example.com \
@@ -317,23 +305,113 @@ chaincodeInvoke() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "createRawFood","Args":["546f6d6f6b6f","Food-ABCDEEE"]}'
+        -c '{"function": "createRawFood","Args":["order_001","FarmId1"]}'
 
-    ## Add private data
-    # export FOOD=$(echo -n "{\"key\":\"1111\", \"name\":\"Apple\",\"grade\":\"One\",\"status\":\"rawfoodcreated\",\"orderId\":\"546f6d6f6b6f\",\"orderPrice\":\"10000\"}" | base64 | tr -d \\n)
-    # export FOOD=$(echo -n "{\"key\":\"1111\", \"name\":\"Apple\",\"grade\":\"One\",\"status\":\"rawfoodcreated\",\"orderId\":\"546f6d6f6b6f\",\"orderPrice\":\"10000\"}" | base64 | tr -d \\n)
-    # peer chaincode invoke -o localhost:7050 \
-    #     --ordererTLSHostnameOverride orderer.example.com \
-    #     --tls $CORE_PEER_TLS_ENABLED \
-    #     --cafile $ORDERER_CA \
-    #     -C $CHANNEL_NAME -n ${CC_NAME} \
-    #     --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
-    #     --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-    #     -c '{"function": "createRawFood", "Args":[]}' \
-    #     --transient "{\"food\":\"$FOOD\"}"
+    
 }
 
 # chaincodeInvoke
+
+chaincodeInvoke2() {
+    
+    setGlobalsForPeer0Org1
+  
+    # Reached manufacturer
+    peer chaincode invoke -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com \
+        --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA \
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "manufactureProcessing","Args":["order_001","ManuID1"]}'
+
+    
+}
+
+# chaincodeInvoke2
+
+chaincodeInvoke3() {
+    
+    setGlobalsForPeer0Org1
+  
+    # Wholesaler la milala mal 
+    peer chaincode invoke -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com \
+        --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA \
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "wholesalerDistribute","Args":["order_001","WholID1"]}'
+
+    
+}
+
+# chaincodeInvoke3
+
+chaincodeInvoke4() {
+    
+    setGlobalsForPeer0Org1
+  
+    # Initiated Shipment pe pee
+    peer chaincode invoke -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com \
+        --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA \
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "initiateShipment","Args":["order_001","ShipID1"]}'
+
+    
+}
+
+# chaincodeInvoke4
+
+chaincodeInvoke5() {
+    
+    setGlobalsForPeer0Org1
+  
+    # Delivered to Retailer
+    peer chaincode invoke -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com \
+        --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA \
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "deliverToRetail","Args":["order_001","RetailID1"]}'
+
+    
+}
+
+# chaincodeInvoke5
+
+chaincodeInvoke6() {
+    
+    setGlobalsForPeer0Org1
+  
+    # Order complete
+    peer chaincode invoke -o localhost:7050 \
+        --ordererTLSHostnameOverride orderer.example.com \
+        --tls $CORE_PEER_TLS_ENABLED \
+        --cafile $ORDERER_CA \
+        -C $CHANNEL_NAME -n ${CC_NAME}  \
+        --peerAddresses localhost:7051 \
+        --tlsRootCertFiles $PEER0_ORG1_CA \
+        --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
+        -c '{"function": "completeOrder","Args":["order_001"]}'
+
+    
+}
+
+# chaincodeInvoke6
+
 
 chaincodeQuery() {
     setGlobalsForPeer0Org2
@@ -371,4 +449,6 @@ chaincodeQuery() {
 # sleep 5
 # chaincodeInvoke
 # sleep 3
-# chaincodeQuery
+
+# chaincodeInvoke6
+chaincodeQuery

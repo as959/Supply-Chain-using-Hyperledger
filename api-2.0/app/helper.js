@@ -7,6 +7,13 @@ const fs = require('fs');
 
 const util = require('util');
 
+// Kaam kar rha hai boss
+const ccpPath = path.resolve(__dirname, '..', 'config', 'connection-org1.json');
+const ccpJSON = fs.readFileSync(ccpPath, 'utf8')
+const ccp = JSON.parse(ccpJSON);
+console.log(ccp.peers)  
+//
+
 const getCCP = async (org) => {
     let ccpPath;
     if (org == "Org1") {
@@ -18,6 +25,7 @@ const getCCP = async (org) => {
         return null
     const ccpJSON = fs.readFileSync(ccpPath, 'utf8')
     const ccp = JSON.parse(ccpJSON);
+   
     return ccp
 }
 
