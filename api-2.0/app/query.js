@@ -47,7 +47,13 @@ const query = async (channelName, chaincodeName, args, fcn, username, org_name) 
         if (fcn == "queryCar" || fcn =="queryCarsByOwner" || fcn == 'getHistoryForAsset' || fcn=='restictedMethod') {
             result = await contract.evaluateTransaction(fcn, args[0]);
 
-        } else if (fcn == "readPrivateCar" || fcn == "queryPrivateDataHash"
+        }  else if (fcn == "query") { // made changes here
+
+            result = await contract.submitTransaction(fcn, args[0]);
+            message = `Checking status on  ${args[0]}`
+
+
+        }  else if (fcn == "readPrivateCar" || fcn == "queryPrivateDataHash"
         || fcn == "collectionCarPrivateDetails") {
             result = await contract.evaluateTransaction(fcn, args[0], args[1]);
             // return result

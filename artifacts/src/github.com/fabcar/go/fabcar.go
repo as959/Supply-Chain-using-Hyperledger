@@ -39,24 +39,12 @@ func (t *FoodContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func setupFoodSupplyChainOrder(stub shim.ChaincodeStubInterface) pb.Response {
-	fmt.Println("Hiiiii")
+	fmt.Println("_______________________________________________")
+	fmt.Println("------ Chaincode Initiated Successfully -------")
+	fmt.Println("_______________________________________________")
 
 	_, args := stub.GetFunctionAndParameters()
 	fmt.Println(args)
-	orderId := args[0]
-	consumerId := args[1]
-	orderPrice, _ := strconv.Atoi(args[2])
-	shippingPrice, _ := strconv.Atoi(args[3])
-	produceName := args[4]
-	fmt.Println("Hiiiii 1")
-	grade := args[5]
-	fmt.Println("Hiiiii 2")
-	foodContract := food{
-		OrderId: orderId, ConsumerId: consumerId, OrderPrice: orderPrice, ShippingPrice: shippingPrice, Status: "order initiated", ProduceName: produceName, Grade: grade}
-	foodBytes, _ := json.Marshal(foodContract)
-	fmt.Println("Hiiiii 3")
-	stub.PutState(foodContract.OrderId, foodBytes)
-	fmt.Println("Hiiiii 4")
 	return shim.Success(nil)
 }
 
@@ -81,25 +69,23 @@ func (t *FoodContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func (f *FoodContract) createRawFood(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 2 {
+	if len(args) != 6 {
 		fmt.Println(args)
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+		return shim.Error("Incorrect number of arguments. Expecting 6")
 	}
+
+	fmt.Println(args)
 	orderId := args[0] // THIS WILL BE THE SHA256 QR hash
-	fmt.Println(args[0])
-	foodBytes, _ := stub.GetState(orderId)
-	fd := food{}
-	json.Unmarshal(foodBytes, &fd)
-	if fd.Status == "order initiated" {
-		fd.FoodId = args[1] // Take input of farmer ID
-		currentts := time.Now()
-		fd.RawFoodProcessDate = currentts.Format("2006-01-02 15:04:05")
-		fd.Status = "raw food created"
-	} else {
-		fmt.Printf("Order not initiated yet")
-	}
-	foodBytes, _ = json.Marshal(fd)
-	stub.PutState(orderId, foodBytes)
+	consumerId := args[1]
+	orderPrice, _ := strconv.Atoi(args[2])
+	shippingPrice, _ := strconv.Atoi(args[3])
+	produceName := args[4]
+	grade := args[5]
+	foodContract := food{
+		OrderId: orderId, ConsumerId: consumerId, OrderPrice: orderPrice, ShippingPrice: shippingPrice, Status: "raw food created", ProduceName: produceName, Grade: grade}
+	foodBytes, _ := json.Marshal(foodContract)
+	stub.PutState(foodContract.OrderId, foodBytes)
+	
 	return shim.Success(nil)
 }
 

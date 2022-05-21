@@ -280,13 +280,13 @@ chaincodeInvokeInit() {
         -C $CHANNEL_NAME -n ${CC_NAME} \
         --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA \
-        --isInit -c '{"Args":["init","order_001","John_1","100","5","apple","organic A"]}'
+        --isInit -c '{"Args":[]}'
 
 }
 
 # chaincodeInvokeInit
 
-chaincodeInvoke() {
+chaincodeInvoke1() {
     # setGlobalsForPeer0Org1
     # peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com \
     # --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n ${CC_NAME} \
@@ -305,12 +305,12 @@ chaincodeInvoke() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "createRawFood","Args":["order_001","FarmId1"]}'
+        -c '{"function": "createRawFood","Args":["order_001","Sarah_1","1000","5","orange","organic B"]}'
 
     
 }
 
-# chaincodeInvoke
+# chaincodeInvoke1
 
 chaincodeInvoke2() {
     
@@ -445,10 +445,25 @@ chaincodeQuery() {
 # checkCommitReadyness
 # commitChaincodeDefination
 # queryCommitted
+
 # chaincodeInvokeInit 
 # sleep 5
-# chaincodeInvoke
-# sleep 3
 
-# chaincodeInvoke6
+chaincodeInvoke1
+sleep 5
+chaincodeQuery
+chaincodeInvoke2
+sleep 5
+chaincodeQuery
+chaincodeInvoke3
+sleep 5
+chaincodeQuery
+chaincodeInvoke4
+sleep 5
+chaincodeQuery
+chaincodeInvoke5
+sleep 5
+chaincodeQuery
+chaincodeInvoke6
+sleep 5
 chaincodeQuery
