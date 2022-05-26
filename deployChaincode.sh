@@ -305,7 +305,7 @@ chaincodeInvoke1() {
         --peerAddresses localhost:7051 \
         --tlsRootCertFiles $PEER0_ORG1_CA \
         --peerAddresses localhost:9051 --tlsRootCertFiles $PEER0_ORG2_CA   \
-        -c '{"function": "createRawFood","Args":["order_001","Sarah_1","1000","5","orange","organic B"]}'
+        -c '{"function": "createRawFood","Args":["order_001","Sarah_1","1000","5","orange","organic B","gds78","n556"]}'
 
     
 }
@@ -431,6 +431,7 @@ chaincodeQuery() {
 # chaincodeQuery
 
 # Run this function if you add any new dependency in chaincode
+
 # presetup
 
 # packageChaincode
@@ -449,21 +450,21 @@ chaincodeQuery() {
 # chaincodeInvokeInit 
 # sleep 5
 
-chaincodeInvoke1
-sleep 5
-chaincodeQuery
-chaincodeInvoke2
-sleep 5
-chaincodeQuery
-chaincodeInvoke3
-sleep 5
-chaincodeQuery
-chaincodeInvoke4
-sleep 5
-chaincodeQuery
-chaincodeInvoke5
-sleep 5
-chaincodeQuery
-chaincodeInvoke6
-sleep 5
+# chaincodeInvoke1
+# sleep 5
+# chaincodeQuery
+# chaincodeInvoke2
+# sleep 5
+# chaincodeQuery
+# chaincodeInvoke3
+# sleep 5
+# chaincodeQuery
+# chaincodeInvoke4
+# sleep 5
+# chaincodeQuery
+# chaincodeInvoke5
+# sleep 5
+# chaincodeQuery
+# chaincodeInvoke6
+# sleep 5
 chaincodeQuery

@@ -31,6 +31,8 @@ type food struct {
 	OrderPrice             int    `json:"orderPrice"`
 	ShippingPrice          int    `json:"shippingPrice"`
 	DeliveryDate           string `json:"deliveryDate"`
+	Latitude 			   string `json:"latitude"`
+	Longitude			   string `json:"longitude"`
 }
 
 func (t *FoodContract) Init(stub shim.ChaincodeStubInterface) pb.Response {
@@ -69,7 +71,7 @@ func (t *FoodContract) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 }
 
 func (f *FoodContract) createRawFood(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 6 {
+	if len(args) != 8 {
 		fmt.Println(args)
 		return shim.Error("Incorrect number of arguments. Expecting 6")
 	}
@@ -81,8 +83,10 @@ func (f *FoodContract) createRawFood(stub shim.ChaincodeStubInterface, args []st
 	shippingPrice, _ := strconv.Atoi(args[3])
 	produceName := args[4]
 	grade := args[5]
+	lat:=args[6]
+	long:=args[7]
 	foodContract := food{
-		OrderId: orderId, ConsumerId: consumerId, OrderPrice: orderPrice, ShippingPrice: shippingPrice, Status: "raw food created", ProduceName: produceName, Grade: grade}
+		OrderId: orderId, ConsumerId: consumerId, OrderPrice: orderPrice, ShippingPrice: shippingPrice, Status: "raw food created", ProduceName: produceName, Grade: grade,Latitude:lat,Longitude:long}
 	foodBytes, _ := json.Marshal(foodContract)
 	stub.PutState(foodContract.OrderId, foodBytes)
 	
