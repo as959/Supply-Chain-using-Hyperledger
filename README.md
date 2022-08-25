@@ -5,11 +5,13 @@
 ![image](https://user-images.githubusercontent.com/46996519/170439070-94b66ce6-5b5e-4765-a598-cf727b087208.png)
 
 
-A peer to peer  decentralized system for tracebility of farmer produce from the producer to the consumer involving all stakeholders of the supply chain. Developed by
+
+
+Developed by
 Ankita Shelke,Smit Bhatt, Jainam Shah for our final year engineering project.
 Project Description
 
-Built a permissioned blockchain in Hyperledger fabric for managing the supply chain of APMC market. Integrate with an Android mobile application built in flutter to track the fruit produced in India and distributed world wide. 
+A peer to peer  decentralized system for tracebility of farmer produce from the producer to the consumer involving all stakeholders of the supply chain. we have Built a permissioned blockchain in Hyperledger fabric for managing the supply chain of APMC market. Integrate with an Android mobile application built in flutter to track the fruit produced , and check its authenticity. 
 
 
 Setup Blockchain Network in Hyperledger Fabric
